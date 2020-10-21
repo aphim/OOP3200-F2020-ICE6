@@ -1,19 +1,35 @@
 #include "GameObject.h"
 
-GameObject::GameObject(): m_id(0), m_position(Vector2D<float>())
+#include <utility>
+
+GameObject::GameObject(): m_id(0), m_name("not set"), m_position(Vector2D<float>())
 {
 }
 
 GameObject::GameObject(const int id, const float x, const float y)
 {
 	SetID(id);
+	SetName("not set");
 	SetPosition(x, y);
 }
 
 GameObject::GameObject(const int id, const Vector2D<float>& position)
 {
 	SetID(id);
+	SetName("not set");
 	SetPosition(position);
+}
+
+GameObject::GameObject(std::string name, const int id, const Vector2D<float>& position): name_(std::move(name)) {
+	SetID(id);
+	SetName(name);
+	SetPosition(position);
+}
+
+GameObject::GameObject(std::string name, const int id, float x, float y): name_(std::move(name)) {
+	SetID(id);
+	SetName(name);
+	SetPosition(x, y);
 }
 
 GameObject::~GameObject()
@@ -32,6 +48,8 @@ GameObject& GameObject::operator=(const GameObject& other_object)
 	return (*this);
 }
 
+
+
 Vector2D<float> GameObject::GetPosition() const
 {
 	return m_position;
@@ -42,9 +60,19 @@ int GameObject::GetID() const
 	return m_id;
 }
 
+std::string GameObject::GetName() const
+{
+	return m_name;
+}
+
 void GameObject::SetID(const int id)
 {
 	m_id = id;
+}
+
+void GameObject::SetName(std::string name)
+{
+	m_name = name;
 }
 
 void GameObject::SetPosition(const float x, const float y)
@@ -61,6 +89,16 @@ std::string GameObject::ToString() const
 {
 	std::string output_string;
 	output_string += "ID       : " + std::to_string(GetID()) + "\n";
+	output_string += "name	   : " + GetName() + "\n";
 	output_string += "Position : " + GetPosition().ToString() + "\n";
+	return output_string;
+}
+
+std::string GameObject::ToFile() const
+{
+	std::string output_string;
+	output_string += std::to_string(GetID()) + " ";
+	output_string += GetName() + " ";
+	output_string += GetPosition().ToString() + "\n";
 	return output_string;
 }

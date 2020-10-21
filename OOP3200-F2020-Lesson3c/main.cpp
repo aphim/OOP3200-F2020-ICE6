@@ -1,10 +1,11 @@
 #include <iomanip>
 #include <iostream>
-
+#include <map>
 #include <vector>
-
 #include "GameObject.h"
 #include "Vector3D.h"
+#include <cstdlib>
+#include <fstream>
 
 
 static void BuildGameObjects(std::vector<GameObject*>& game_objects, const int num = 2)
@@ -51,26 +52,76 @@ static void CompareGameObjects(GameObject* object1, GameObject* object2)
 
 int main()
 {
-	std::vector<GameObject*> gameObjects;
+	std::map<std::string, GameObject*> gameObjects;
 
-	int num_of_GO;
-	std::cout << "How Many Game Objects do you need?: ";
-	std::cin >> num_of_GO;
-	std::cout << "\n--------------------------------------------------------------" << std::endl;
+	GameObject* ship = new GameObject("ship", 0, 3.0f, 4.0f);
+	GameObject* enemy= new GameObject("enemy", 0, 10.0f, 20.0f);
 
-	BuildGameObjects(gameObjects, num_of_GO);
+
+	gameObjects["ships"] = ship;
+	gameObjects["enemy"] = enemy;
+
+
+
+	auto distance = Vector2D<float>::Distance(gameObjects["ship"]->GetPosition(), gameObjects["enemy"]->GetPosition());
+
+	std::cout << "Distance between " << gameObjects["ship"]->GetName()
+		<< " and " << gameObjects["enemy"]->GetName() << " is " << std::to_string(distance) << std::endl;
+
+	std::ofstream outfile("GameObject.txt", std::ios::out);
+	outfile << gameObjects["ship"]->ToFile()<< std::endl;
+	outfile << gameObjects["enemy"]->ToFile()<< std::endl;
+
+	outfile.close();
+
+	std::ifstream infile("GameObject.txt", std::ios::in);
+
+	while (infile.eof())
+	{
+        int id, x, y = 0;
+		std::string name;
+		Vector2D<float> position;
+		infile >> id >> name;
+		infile.ignore();
+		infile >> x;
+		infile.ignore();
+		infile >> y;
+		infile.ignore();
+		
+		auto tempObject = new GameObject(name, id, x, y);
+
+		gameObjects[name + " 2"] = tempObject;
+	}
+	infile.close();
+
+	for (auto game_object : gameObjects)
+	{
+		std::cout << "Key	" << game_object.first << std::endl;
+		std::cout << "Value	" << std::endl;
+		std::cout << "------------------------------------" << std::endl;
+		std::cout << game_object.second->ToString() << std::endl;
+	}
 	
-	
-	int index1;
-	std::cout << "What is the First Object index?: ";
-	std::cin >> index1;
-	std::cout << "\n--------------------------------------------------------------" << std::endl;
-	int index2;
-	std::cout << "What is the Second Object index?: ";
-	std::cin >> index2;
-	std::cout << "\n--------------------------------------------------------------" << std::endl;
-	
-	CompareGameObjects(gameObjects[index1], gameObjects[index2]);
-	CompareGameObjects(gameObjects[index1], gameObjects[index2]);
+	//std::vector<GameObject*> gameObjects;
+
+	//int num_of_GO;
+	//std::cout << "How Many Game Objects do you need?: ";
+	//std::cin >> num_of_GO;
+	//std::cout << "\n--------------------------------------------------------------" << std::endl;
+
+	//BuildGameObjects(gameObjects, num_of_GO);
+	//
+	//
+	//int index1;
+	//std::cout << "What is the First Object index?: ";
+	//std::cin >> index1;
+	//std::cout << "\n--------------------------------------------------------------" << std::endl;
+	//int index2;
+	//std::cout << "What is the Second Object index?: ";
+	//std::cin >> index2;
+	//std::cout << "\n--------------------------------------------------------------" << std::endl;
+	//
+	//CompareGameObjects(gameObjects[index1], gameObjects[index2]);
+	//CompareGameObjects(gameObjects[index1], gameObjects[index2]);
 }
 
