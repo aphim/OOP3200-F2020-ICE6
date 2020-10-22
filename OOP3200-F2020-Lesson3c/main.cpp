@@ -54,45 +54,14 @@ int main()
 {
 	std::map<std::string, GameObject*> gameObjects;
 
-	GameObject* ship = new GameObject("ship", 0, 3.0f, 4.0f);
-	GameObject* enemy= new GameObject("enemy", 0, 10.0f, 20.0f);
+	auto* ship = new GameObject("Ship", 0, 3.0f, 4.0f);
+	auto* enemy = new GameObject("Enemy", 0, 10.0f, 20.0f);
+	auto* space_station = new GameObject("Spacestation", 2, 100.0f, 200.0f);
 
 
-	gameObjects["ships"] = ship;
-	gameObjects["enemy"] = enemy;
-
-
-
-	auto distance = Vector2D<float>::Distance(gameObjects["ship"]->GetPosition(), gameObjects["enemy"]->GetPosition());
-
-	std::cout << "Distance between " << gameObjects["ship"]->GetName()
-		<< " and " << gameObjects["enemy"]->GetName() << " is " << std::to_string(distance) << std::endl;
-
-	std::ofstream outfile("GameObject.txt", std::ios::out);
-	outfile << gameObjects["ship"]->ToFile()<< std::endl;
-	outfile << gameObjects["enemy"]->ToFile()<< std::endl;
-
-	outfile.close();
-
-	std::ifstream infile("GameObject.txt", std::ios::in);
-
-	while (infile.eof())
-	{
-        int id, x, y = 0;
-		std::string name;
-		Vector2D<float> position;
-		infile >> id >> name;
-		infile.ignore();
-		infile >> x;
-		infile.ignore();
-		infile >> y;
-		infile.ignore();
-		
-		auto tempObject = new GameObject(name, id, x, y);
-
-		gameObjects[name + " 2"] = tempObject;
-	}
-	infile.close();
+	gameObjects[ship->GetName()] = ship;
+	gameObjects[enemy->GetName()] = enemy;
+	gameObjects[space_station->GetName()] = enemy;
 
 	for (auto game_object : gameObjects)
 	{
@@ -101,6 +70,62 @@ int main()
 		std::cout << "------------------------------------" << std::endl;
 		std::cout << game_object.second->ToString() << std::endl;
 	}
+
+	auto distance = Vector2D<float>::Distance(gameObjects["Ship"]->GetPosition(), gameObjects["Enemy"]->GetPosition());
+
+	std::cout << "Distance between " << gameObjects["Ship"]->GetName()
+		<< " and " << gameObjects["Enemy"]->GetName() << " is " << std::to_string(distance) << std::endl;
+
+
+	//output
+	std::ofstream outfile("GameObject.txt", std::ios::out);
+	outfile << gameObjects["Ship"]->ToFile()<< std::endl;
+	outfile << gameObjects["Enemy"]->ToFile()<< std::endl;
+	outfile << gameObjects["Spacestation"]->ToFile() << std::endl;
+
+	outfile.close();
+
+	std::cout << "-----------------\n End of output - start input \n--------------------------"<<std::endl;
+
+	std::ifstream infile;
+	std::string fileName = "GameObject.txt";
+
+	infile.open(fileName.c_str());
+
+	if (infile.is_open())
+	{
+		int id;
+		float x, y;
+		std::string name;
+
+		while (!infile.fail())
+		{
+			infile >> id >> name;
+			infile.ignore(1, ' ');
+			infile.ignore(1, '(');
+			infile >> x;
+			infile.ignore(1, ',');
+			infile.ignore(1, ' ');
+			infile >> y;
+			infile.ignore(1, ')');
+
+			auto* temp_object = new GameObject(name, id, x, y);
+
+			gameObjects[name + " 2"] = temp_object;
+		}
+		infile.close();
+	}
+
+	for (const auto& game_object : gameObjects)
+	{
+		std::cout << "Key  : " << game_object.first << std::endl;
+		std::cout << "Value: " << std::endl;
+		std::cout << "---------------------------------" << std::endl;
+		std::cout << game_object.second->ToString() << std::endl;
+	}
+
+	std::cout << "-----------------\n End of input \n--------------------------"<<std::endl;
+
 	
 	//std::vector<GameObject*> gameObjects;
 

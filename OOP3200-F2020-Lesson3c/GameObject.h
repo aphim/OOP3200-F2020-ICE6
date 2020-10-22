@@ -13,8 +13,8 @@ public:
 	GameObject();
 	GameObject(int id, float x, float y);
 	GameObject(int id, const Vector2D<float>& position);
-	GameObject(std::string name, int id, const Vector2D<float>& position);
-	GameObject(std::string name, int id, float x, float y);
+	GameObject(const std::string& name, int id, const Vector2D<float>& position);
+	GameObject(const std::string& name, int id, float x, float y);
 
 	
 	// Rule of Three
@@ -31,7 +31,7 @@ public:
 	void SetPosition(float x, float y);
 	void SetPosition(const Vector2D<float>& new_position);
 	void SetID(int id);
-	void SetName(std::string name);
+	void SetName(const std::string& name);
 
 	// Utility Functions
 	std::string ToString() const;
@@ -41,7 +41,6 @@ private:
 	int m_id{};
 	std::string m_name;
 	Vector2D<float> m_position;
-	std::string name_;
 };
 
 #endif /* defined (__GAME_OBJECT__) */

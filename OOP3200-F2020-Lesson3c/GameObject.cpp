@@ -20,13 +20,15 @@ GameObject::GameObject(const int id, const Vector2D<float>& position)
 	SetPosition(position);
 }
 
-GameObject::GameObject(std::string name, const int id, const Vector2D<float>& position): name_(std::move(name)) {
+GameObject::GameObject(const std::string& name, const int id, const Vector2D<float>& position)
+{
 	SetID(id);
 	SetName(name);
 	SetPosition(position);
 }
 
-GameObject::GameObject(std::string name, const int id, float x, float y): name_(std::move(name)) {
+GameObject::GameObject(const std::string& name, const int id, float x, float y)
+{
 	SetID(id);
 	SetName(name);
 	SetPosition(x, y);
@@ -70,7 +72,7 @@ void GameObject::SetID(const int id)
 	m_id = id;
 }
 
-void GameObject::SetName(std::string name)
+void GameObject::SetName(const std::string& name)
 {
 	m_name = name;
 }
